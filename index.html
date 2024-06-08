@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .calculator {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .display {
+            width: 100%;
+            height: 50px;
+            background-color: #222;
+            color: #fff;
+            text-align: right;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .button {
+            padding: 20px;
+            background-color: #eee;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #ddd;
+        }
+        .button.operation {
+            background-color: #ff9500;
+            color: #fff;
+        }
+        .button.operation:hover {
+            background-color: #e08900;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        {% if result is not none %}
+            <h2>Result: {{ result }}</h2>
+        {% endif %}
+        <div class="buttons">
+            <button class="button" onclick="appendNumber(7)">7</button>
+            <button class="button" onclick="appendNumber(8)">8</button>
+            <button class="button" onclick="appendNumber(9)">9</button>
+            <button class="button operation" onclick="chooseOperation('div')">÷</button>
+            <button class="button" onclick="appendNumber(4)">4</button>
+            <button class="button" onclick="appendNumber(5)">5</button>
+            <button class="button" onclick="appendNumber(6)">6</button>
+            <button class="button operation" onclick="chooseOperation('mult')">×</button>
+            <button class="button" onclick="appendNumber(1)">1</button>
+            <button class="button" onclick="appendNumber(2)">2</button>
+            <button class="button" onclick="appendNumber(3)">3</button>
+            <button class="button operation" onclick="chooseOperation('sub')">−</button>
+            <button class="button" onclick="appendNumber(0)">0</button>
+            <button class="button" onclick="clearDisplay()">C</button>
+            <button class="button" onclick="calculate()">=</button>
+            <button class="button operation" onclick="chooseOperation('add')">+</button>
+        </div>
+    </div>
+    <form id="calcForm" action="/calculate" method="post" style="display:none;">
+        <input type="hidden" name="num1" id="num1">
+        <input type="hidden" name="operation" id="operation">
+        <input type="hidden" name="num2" id="num2">
+    </form>
+    <script>
+        let display = document.getElementById('display');
+        let num1 = '';
+        let num2 = '';
+        let operation = null;
+        let resultDisplayed = false;
+
+        function appendNumber(number) {
+            if (resultDisplayed) {
+                display.textContent = '';
+                resultDisplayed = false;
+            }
+            display.textContent += number;
+        }
+
+        function chooseOperation(op) {
+            if (operation !== null) return;
+            num1 = display.textContent;
+            operation = op;
+            display.textContent = '';
+        }
+
+        function clearDisplay() {
+            display.textContent = '0';
+            num1 = '';
+            num2 = '';
+            operation = null;
+            resultDisplayed = false;
+        }
+
+        function calculate() {
+            if (operation === null) return;
+            num2 = display.textContent;
+            document.getElementById('num1').value = num1;
+            document.getElementById('operation').value = operation;
+            document.getElementById('num2').value = num2;
+            document.getElementById('calcForm').submit();
+        }
+    </script>
+</body>
+</html>
